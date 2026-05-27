@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Waiver Form</title>
+    <style>
+        canvas { border: 1px solid #ccc; background: #f9f9f9; display: block; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+
+    <form id="waiver-form" action="https://formspree.io/f/mredorjd" method="POST">
+        <label>Full Name:</label><br>
+        <input type="text" name="name" required><br><br>
+
+        <label>Email Address:</label><br>
+        <input type="email" name="email" required><br><br>
+
+        <label>Signature:</label>
+        <canvas id="sig-canvas" width="400" height="200"></canvas>
+        <button type="button" onclick="clearSig()">Clear Signature</button>
+        
+        <!-- Hidden field to hold the image data -->
+        <input type="hidden" name="signature" id="sig-data">
+
+        <br><br>
+        <button type="submit">Submit Waiver</button>
+    </form>
+
+    <!-- Load Signature Pad library -->
+    <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+    <script>
+        const canvas = document.getElementById('sig-canvas');
+        const signaturePad = new SignaturePad(canvas);
+        const form = document.getElementById('waiver-form');
+
+        function clearSig() { signaturePad.clear(); }
+
+        form.addEventListener('submit', (e) => {
+            if (signaturePad.isEmpty()) {
+                e.preventDefault();
+                alert("Please provide a signature.");
+            } else {
+                // Populate the hidden input with the base64 image string
+                document.getElementById('sig-data').value = signaturePad.toDataURL();
+            }
+        });
+    </script>
+</body>
+</html>
