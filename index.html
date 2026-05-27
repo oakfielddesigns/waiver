@@ -2,19 +2,37 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Waiver Form</title>
     <style>
-        canvas { border: 1px solid #ccc; background: #f9f9f9; display: block; margin-bottom: 10px; }
+        body { font-family: sans-serif; max-width: 500px; margin: 2rem auto; padding: 0 1rem; }
+        canvas { border: 1px solid #ccc; background: #f9f9f9; display: block; margin-bottom: 10px; cursor: crosshair; }
+        input { width: 100%; padding: 8px; margin-bottom: 15px; box-sizing: border-box; }
+        button { padding: 10px 20px; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <form id="waiver-form" action="https://formspree.io/f/mredorjd" method="POST">
-        <label>Full Name:</label><br>
-        <input type="text" name="name" required><br><br>
+    <h2>Sign the Waiver</h2>
+    <form action="https://api.web3forms.com/submit" method="POST" id="waiver-form">
+        
+        <!-- 1. REPLACE THIS WITH YOUR ACCESS KEY FROM WEB3FORMS -->
+        <input type="hidden" name="access_key" value="YOUR_ACCESS_KEY_HERE">
 
-        <label>Email Address:</label><br>
-        <input type="email" name="email" required><br><br>
+        <!-- 2. CONFIGURATION FOR WEB3FORMS -->
+        <input type="hidden" name="subject" value="New Waiver Received">
+        <input type="hidden" name="from_name" value="Your Organization Name">
+        
+        <!-- This tells Web3Forms to send an email to the user as well -->
+        <input type="hidden" name="email_from" value="you@example.com">
+        <input type="hidden" name="replyto" value="@">
+
+        <!-- 3. USER FIELDS -->
+        <label>Full Name:</label>
+        <input type="text" name="name" required>
+
+        <label>Email Address:</label>
+        <input type="email" name="email" required>
 
         <label>Signature:</label>
         <canvas id="sig-canvas" width="400" height="200"></canvas>
@@ -27,7 +45,6 @@
         <button type="submit">Submit Waiver</button>
     </form>
 
-    <!-- Load Signature Pad library -->
     <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
     <script>
         const canvas = document.getElementById('sig-canvas');
@@ -41,7 +58,7 @@
                 e.preventDefault();
                 alert("Please provide a signature.");
             } else {
-                // Populate the hidden input with the base64 image string
+                // Convert signature to Base64 image
                 document.getElementById('sig-data').value = signaturePad.toDataURL();
             }
         });
