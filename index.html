@@ -159,7 +159,6 @@ I acknowledge that I have had a reasonable opportunity to read this document and
 
         <label>Signature:</label>
         <canvas id="sig-canvas" width="400" height="200"></canvas>
-        <button type="button" onclick="clearSig()">Clear Signature</button>
         
         <input type="hidden" name="signature" id="sig-data">
 
@@ -189,8 +188,6 @@ I acknowledge that I have had a reasonable opportunity to read this document and
                 minorTextArea.value = ''; // Optional: clears field if user unchecks it
             }
         });
-
-        function clearSig() { signaturePad.clear(); }
 
         form.addEventListener('submit', (e) => {
             if (signaturePad.isEmpty()) {
