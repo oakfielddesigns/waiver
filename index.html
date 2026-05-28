@@ -9,6 +9,34 @@
         canvas { border: 1px solid #ccc; background: #f9f9f9; display: block; margin-bottom: 10px; cursor: crosshair; }
         input { width: 100%; padding: 8px; margin-bottom: 15px; box-sizing: border-box; }
         button { padding: 10px 20px; cursor: pointer; }
+        
+        /* Custom styling for the checkbox wrapper and textarea */
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .checkbox-container input[type="checkbox"] {
+            width: auto; /* Overrides the 100% width rule */
+            margin-bottom: 0;
+            cursor: pointer;
+        }
+        .checkbox-container label {
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .textarea-container {
+            display: none; /* Hidden by default */
+            margin-bottom: 15px;
+        }
+        textarea {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            resize: vertical;
+            font-family: sans-serif;
+        }
     </style>
 </head>
 <body>
@@ -108,16 +136,23 @@ I acknowledge that I have had a reasonable opportunity to read this document and
     
     <form action="https://api.web3forms.com/submit" method="POST" id="waiver-form">
         
-        <!-- 1. REPLACE THIS WITH YOUR ACCESS KEY FROM WEB3FORMS -->
         <input type="hidden" name="access_key" value="141275c2-e5fd-4f27-abcc-822127e05382">
 
-        <!-- 2. CONFIGURATION FOR WEB3FORMS -->
         <input type="hidden" name="subject" value="New Waiver Received">
         <input type="hidden" name="from_name" value="Oakfield Waivers">
 
-        <!-- 3. USER FIELDS -->
         <label>Full Name:</label>
         <input type="text" name="name" required>
+
+        <div class="checkbox-container">
+            <input type="checkbox" id="sign-for-minors" name="signing_for_minors" value="Yes">
+            <label for="sign-for-minors">I am also signing on behalf of accompanied minors</label>
+        </div>
+
+        <div class="textarea-container" id="minors-input-section">
+            <label for="minors-names"><b>Names of accompanied minors:</b></label>
+            <textarea id="minors-names" name="names_of_accompanied_minors" rows="4" placeholder="Please enter each child's full name, separated by commas or new lines."></textarea>
+        </div>
 
         <label>Email Address:</label>
         <input type="email" name="email" required>
@@ -126,7 +161,6 @@ I acknowledge that I have had a reasonable opportunity to read this document and
         <canvas id="sig-canvas" width="400" height="200"></canvas>
         <button type="button" onclick="clearSig()">Clear Signature</button>
         
-        <!-- Hidden field to hold the image data -->
         <input type="hidden" name="signature" id="sig-data">
 
         <br><br>
@@ -138,6 +172,23 @@ I acknowledge that I have had a reasonable opportunity to read this document and
         const canvas = document.getElementById('sig-canvas');
         const signaturePad = new SignaturePad(canvas);
         const form = document.getElementById('waiver-form');
+        
+        // Minor fields selectors
+        const minorCheckbox = document.getElementById('sign-for-minors');
+        const minorSection = document.getElementById('minors-input-section');
+        const minorTextArea = document.getElementById('minors-names');
+
+        // Toggle visibility and required logic for minors input
+        minorCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                minorSection.style.display = 'block';
+                minorTextArea.setAttribute('required', 'true');
+            } else {
+                minorSection.style.display = 'none';
+                minorTextArea.removeAttribute('required');
+                minorTextArea.value = ''; // Optional: clears field if user unchecks it
+            }
+        });
 
         function clearSig() { signaturePad.clear(); }
 
